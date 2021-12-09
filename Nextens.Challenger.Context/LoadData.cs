@@ -16,7 +16,7 @@ namespace Nextens.Challenger.Context
 
             try
             {
-                string[] dirs = Directory.GetFiles(@"../Nextens.Challenger.Context/blobs", "*.json");
+                string[] dirs = Directory.GetFiles(@"..\Nextens.Challenger.Context\blobs", "*.json");
                 foreach (string dir in dirs)
                 {
                     lstClient.Add(JsonConvert.DeserializeObject<Client>(File.ReadAllText(dir)));

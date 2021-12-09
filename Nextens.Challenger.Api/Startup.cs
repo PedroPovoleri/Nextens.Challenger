@@ -6,6 +6,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using Nextens.Challenger.Business;
+using Nextens.Challenger.Business.Interface;
 using Nextens.Challenger.Context;
 using Nextens.Challenger.Context.Interface;
 using System;
@@ -30,6 +32,11 @@ namespace Nextens.Challenger.Api
             services.AddControllers();
 
             services.AddSingleton<ILoadData, LoadData>();
+
+
+            services.AddTransient<IMessagesBusiness, MessagesBusiness>();
+            services.AddTransient<IReportBusiness, ReportBusiness>();
+
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

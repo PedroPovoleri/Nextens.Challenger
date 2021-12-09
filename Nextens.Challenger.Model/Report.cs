@@ -1,16 +1,14 @@
 ﻿using Nextens.Challenger.Model.Interface;
 using System;
 using System.Collections.Generic;
-using System.Text;
 
 namespace Nextens.Challenger.Model
 {
     public class Report : IEntity
     {
-        public Guid Id { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
-        public Guid ClientId { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
-
+        public Guid Id { get; set; }
+        public Guid ClientId { get; set; }
+        public int UsedYear { get; set; }
         public bool WhealthTaxIndicator { get; set; }
         public decimal WealthGrowth { get; set; }
         public bool RealestateIndicator { get; set; }

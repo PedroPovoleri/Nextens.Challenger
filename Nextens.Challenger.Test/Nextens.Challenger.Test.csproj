@@ -13,6 +13,8 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Nextens.Challenger.Business\Nextens.Challenger.Business.csproj" />
+    <ProjectReference Include="..\Nextens.Challenger.Context\Nextens.Challenger.Context.csproj" />
     <ProjectReference Include="..\Nextens.Challenger.Model\Nextens.Challenger.Model.csproj" />
   </ItemGroup>
 
