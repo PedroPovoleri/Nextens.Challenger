@@ -10,13 +10,13 @@ namespace Nextens.Challenger.Api.Controllers
     public class HomeController : ControllerBase
     {
         private readonly ILoadData loadData;
-        private readonly IMessagesBusiness messages;
+        private readonly IMessagesBusiness messagesBusiness;
         private readonly IReportBusiness reportBusiness;
 
-        public HomeController(ILoadData loadData, IMessagesBusiness messages, IReportBusiness reportBusiness)
+        public HomeController(ILoadData loadData, IMessagesBusiness messagesBusiness, IReportBusiness reportBusiness)
         {
             this.loadData = loadData;
-            this.messages = messages;
+            this.messagesBusiness = messagesBusiness;
             this.reportBusiness = reportBusiness;
         }
 
@@ -32,21 +32,29 @@ namespace Nextens.Challenger.Api.Controllers
         [HttpGet]
         public JsonResult Report()
         {
-            return new JsonResult(loadData.LoadDataset());
+            return new JsonResult(reportBusiness.GetReports());
         }
 
-        [Route("/SearchForClient")]
+        [Route("/Report/{clientId}")]
+        [HttpGet]
+        public JsonResult Report(Guid clientId)
+        {
+            return new JsonResult(reportBusiness.GetReportPerClient(clientId));
+        }
+
+
+        [Route("/Client/{clientId}")]
         [HttpGet]
         public JsonResult SearchForClient(Guid clientId)
         {
-            return new JsonResult(messages.GetMessagesFromClient(clientId));
+            return new JsonResult(messagesBusiness.GetMessagesFromClient(clientId));
         }
 
-        [Route("/SearchForMessage")]
+        [Route("/Message/{messageId}")]
         [HttpGet]
         public JsonResult SearchForMessage(Guid messageId)
         {
-            return new JsonResult(messages.GetMessageById(messageId));
+            return new JsonResult(messagesBusiness.GetMessageById(messageId));
         }
     }
 }

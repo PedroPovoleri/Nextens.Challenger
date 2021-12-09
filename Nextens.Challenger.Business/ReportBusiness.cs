@@ -18,9 +18,38 @@ namespace Nextens.Challenger.Business
 
         public List<Report> GetReports()
         {
-            throw new NotImplementedException();
+            var lstRtrn = new List<Report>();
+            var groupMessages = loadData.LoadDataset().GroupBy(x => x.ClientId);
+            foreach (var client in groupMessages)
+            {
+                var report = GetReportPerClient(client.Key);
+                lstRtrn.Add(report);
+            }
+
+            return lstRtrn;
         }
 
+        public Report GetReportPerClient(Guid clientId)
+        {
+            var clientMessages = loadData.LoadDataset().Where(x => x.ClientId == clientId).ToList();
+
+            return CreateReport(clientMessages);
+        }
+
+
+        private Report CreateReport(List<Client> clientMessages)
+        {
+            Client current = clientMessages.OrderByDescending(x => x.Year).FirstOrDefault();
+            return new Report
+            {
+                ClientId = current.ClientId,
+                Id = Guid.NewGuid(),
+                UsedYear = current.Year,
+                RealestateIndicator = RealEstateValue(clientMessages),
+                WhealthTaxIndicator = CheckWealthTaxIndicator(current),
+                IncomeVolatility = CheckIncomeVolatiliy(current, loadData.LoadDataset().FirstOrDefault(x => x.Year == current.Year -1 ))
+            };
+        }
 
 
         private bool CheckIncomeVolatiliy(Client year1, Client year2)
@@ -57,6 +86,7 @@ namespace Nextens.Challenger.Business
         {
             return (client.BankBalanceNational + client.BankbalanceInternational + client.StockInvestments > 200000.00);
         }
+
 
     }
 }
