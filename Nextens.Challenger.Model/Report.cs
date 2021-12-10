@@ -18,6 +18,8 @@ namespace Nextens.Challenger.Model
         public double IncomeVariation { get; set; }
         public double IncomeVariationLastYear { get; set; }
         public double IncomeCurrentYear { get; set; }
+
+        public double Wealth { get; set; }
         public List<string> MessagesUsed { get; set; } = new List<string>();
     }
 }

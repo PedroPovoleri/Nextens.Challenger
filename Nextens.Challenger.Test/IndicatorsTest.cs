@@ -134,7 +134,7 @@ namespace Nextens.Challenger.Test
 
             foreach (Client client in historicalClient.OrderByDescending(x => x.Year).Take(3))
             {
-                FitInTheRole = GetPorcentage(valueBigestYear, client.RealEstatePropertyValue) > 15.00;
+                FitInTheRole = GetPorcentage(valueBigestYear, client.RealEstatePropertyValue.GetValueOrDefault()) > 15.00;
             }
 
 

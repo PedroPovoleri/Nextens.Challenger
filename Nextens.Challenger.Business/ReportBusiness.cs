@@ -26,7 +26,10 @@ namespace Nextens.Challenger.Business
                 lstRtrn.Add(report);
             }
 
-            return lstRtrn;
+            return lstRtrn.Where(x => x.RealestateIndicator == true ||
+                                      x.IncomeVolatility == true ||
+                                      x.WhealthTaxIndicator == true)
+                          .OrderByDescending(x => x.Wealth).ToList();
         }
 
         public Report GetReportPerClient(Guid clientId)
@@ -68,7 +71,12 @@ namespace Nextens.Challenger.Business
             }
             var grebMessages = loadData.LoadDataset().Where(x => x.ClientId == current.ClientId && x.Year >= current.Year - 3);
             repo.MessagesUsed.AddRange(grebMessages.Select(x => $"{x.ClientId}-{x.Id}.json").ToList());
+
+            repo.Wealth = current.BankbalanceInternational.GetValueOrDefault() + current.BankBalanceNational.GetValueOrDefault() + current.StockInvestments.GetValueOrDefault();
+
             return repo;
+
+
         }
 
 
