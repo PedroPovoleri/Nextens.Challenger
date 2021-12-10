@@ -40,15 +40,35 @@ namespace Nextens.Challenger.Business
         private Report CreateReport(List<Client> clientMessages)
         {
             Client current = clientMessages.OrderByDescending(x => x.Year).FirstOrDefault();
-            return new Report
+            var repo = new Report();
+
+            repo.ClientId = current.ClientId;
+            repo.Id = Guid.NewGuid();
+            repo.UsedYear = current.Year;
+            repo.WhealthTaxIndicator = CheckWealthTaxIndicator(current);
+            repo.RealestateIndicator = RealEstateValue(clientMessages);
+            repo.IncomeVolatility = CheckIncomeVolatiliy(current, loadData.LoadDataset().FirstOrDefault(x => x.Year == current.Year - 1));
+            if (repo.RealestateIndicator)
             {
-                ClientId = current.ClientId,
-                Id = Guid.NewGuid(),
-                UsedYear = current.Year,
-                RealestateIndicator = RealEstateValue(clientMessages),
-                WhealthTaxIndicator = CheckWealthTaxIndicator(current),
-                IncomeVolatility = CheckIncomeVolatiliy(current, loadData.LoadDataset().FirstOrDefault(x => x.Year == current.Year -1 ))
-            };
+                repo.RealestateGrothPercent = GetPorcentage(current.RealEstatePropertyValue.GetValueOrDefault(), clientMessages.Where(x => x.Year >= current.Year - 3).OrderBy(x => x.Year).FirstOrDefault().RealEstatePropertyValue.GetValueOrDefault());
+                repo.RealestateGrothValue = current.RealEstatePropertyValue.GetValueOrDefault() - clientMessages.OrderBy(x => x.Year).FirstOrDefault().RealEstatePropertyValue.GetValueOrDefault();
+            }
+
+            if (repo.IncomeVolatility)
+            {
+                repo.IncomeVariation = current.Income.GetValueOrDefault() - loadData.LoadDataset().FirstOrDefault(x => x.Year == current.Year - 1).Income.GetValueOrDefault();
+                repo.IncomeCurrentYear = current.Income.GetValueOrDefault();
+                repo.IncomeVariationLastYear = loadData.LoadDataset().FirstOrDefault(x => x.Year == current.Year - 1).Income.GetValueOrDefault();
+            }
+
+            if (repo.WhealthTaxIndicator)
+            {
+                var lastyear = loadData.LoadDataset().FirstOrDefault(x => x.Year == current.Year - 1);
+                repo.WealthGrowth = (current.BankbalanceInternational.GetValueOrDefault() + current.BankBalanceNational.GetValueOrDefault() + current.StockInvestments.GetValueOrDefault()) - (lastyear.BankbalanceInternational.GetValueOrDefault() + lastyear.BankBalanceNational.GetValueOrDefault() + lastyear.StockInvestments.GetValueOrDefault());
+            }
+            var grebMessages = loadData.LoadDataset().Where(x => x.ClientId == current.ClientId && x.Year >= current.Year - 3);
+            repo.MessagesUsed.AddRange(grebMessages.Select(x => $"{x.ClientId}-{x.Id}.json").ToList());
+            return repo;
         }
 
 
@@ -75,7 +95,10 @@ namespace Nextens.Challenger.Business
 
             foreach (Client client in historicalClient.OrderByDescending(x => x.Year).Take(3))
             {
-                FitInTheRole = GetPorcentage(valueBigestYear, client.RealEstatePropertyValue.GetValueOrDefault()) > 15.00;
+                if (valueBigestYear - client.RealEstatePropertyValue.GetValueOrDefault() > 0)
+                {
+                    FitInTheRole = GetPorcentage(valueBigestYear, client.RealEstatePropertyValue.GetValueOrDefault()) > 15.00;
+                }
             }
 
 

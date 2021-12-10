@@ -10,11 +10,14 @@ namespace Nextens.Challenger.Model
         public Guid ClientId { get; set; }
         public int UsedYear { get; set; }
         public bool WhealthTaxIndicator { get; set; }
-        public decimal WealthGrowth { get; set; }
+        public double WealthGrowth { get; set; }
         public bool RealestateIndicator { get; set; }
-        public decimal RealestateGroth { get; set; }
+        public double RealestateGrothPercent { get; set; }
+        public double RealestateGrothValue { get; set; }
         public bool IncomeVolatility { get; set; }
-        public decimal IncomeVariation { get; set; }
-        public List<string> MessagesUsed { get; set; }
+        public double IncomeVariation { get; set; }
+        public double IncomeVariationLastYear { get; set; }
+        public double IncomeCurrentYear { get; set; }
+        public List<string> MessagesUsed { get; set; } = new List<string>();
     }
 }
